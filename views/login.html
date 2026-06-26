@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Online Examination System</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="login-body">
+
+<div class="main-container">
+
+    <h1>📚 Online Examination System</h1>
+    <p>Select Login Type</p>
+
+    <!-- Selection Cards -->
+
+    <div id="selectionPage">
+
+        <div class="role-card"
+             onclick="showLogin('student')">
+
+            🎓
+            <h2>Student</h2>
+            
+
+        </div>
+
+        <div class="role-card"
+             onclick="showLogin('admin')">
+
+            👨‍💼
+            <h2>Admin</h2>
+        
+
+        </div>
+
+    </div>
+
+
+    <!-- Student Login -->
+
+    <div id="studentLogin"
+         class="login-form"
+         style="display:none;">
+
+        <h2>🎓 Student Login</h2>
+
+        <form action="/login" method="POST">
+
+            <input type="email"
+                   name="email"
+                   placeholder="Email"
+                   required>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Password"
+                   required>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p>
+            New Student?
+            <a href="/register">
+                Register
+            </a>
+        </p>
+
+        <button onclick="goBack()" class="back-btn">
+            ⬅ Back
+        </button>
+
+    </div>
+
+
+    <!-- Admin Login -->
+
+    <div id="adminLogin"
+         class="login-form"
+         style="display:none;">
+
+        <h2>👨‍💼 Admin Login</h2>
+
+        <form action="/admin/login" method="POST">
+
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   required>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Password"
+                   required>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <button onclick="goBack()" class="back-btn">
+            ⬅ Back
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function showLogin(type){
+
+document.getElementById('selectionPage')
+.style.display='none';
+
+if(type==='student'){
+
+document.getElementById('studentLogin')
+.style.display='block';
+
+}
+else{
+
+document.getElementById('adminLogin')
+.style.display='block';
+
+}
+
+}
+
+function goBack(){
+
+document.getElementById('selectionPage')
+.style.display='flex';
+
+document.getElementById('studentLogin')
+.style.display='none';
+
+document.getElementById('adminLogin')
+.style.display='none';
+
+}
+
+</script>
+
+</body>
+</html>

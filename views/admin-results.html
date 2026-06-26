@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Results</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+<div class="container">
+
+<h2>📊 Student Results</h2>
+
+<table class="results-table">
+
+<thead>
+
+<tr>
+
+<th>Student</th>
+<th>Exam</th>
+<th>Score</th>
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody id="resultData">
+
+<tr>
+<td colspan="4">
+Loading...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+<a href="/admin/dashboard"
+class="back-btn">
+
+⬅ Back to Dashboard
+
+</a>
+
+</div>
+
+<script>
+
+fetch(
+'/admin/results/data'
+)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const table=
+document.getElementById(
+'resultData'
+);
+
+table.innerHTML='';
+
+data.forEach(result=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${result.name}</td>
+
+<td>${result.exam_name}</td>
+
+<td>${result.score}</td>
+
+<td>${new Date(
+result.submitted_at
+).toLocaleDateString()}</td>
+
+</tr>
+
+`;
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

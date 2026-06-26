@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Exam</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="exam-body">
+
+<div class="exam-container">
+
+    <div class="exam-header">
+
+        <h2>📝 Online Examination</h2>
+
+        <div class="timer" id="timer">
+
+            ⏰ Time Left: Loading...
+
+        </div>
+
+    </div>
+
+    <form id="examForm">
+
+        <div id="questions">
+
+            Loading questions...
+
+        </div>
+
+        <button
+        type="button"
+        class="submit-btn"
+        onclick="submitExam()">
+
+        Submit Exam
+
+        </button>
+
+    </form>
+
+</div>
+
+
+<script>
+
+const examId=
+window.location.pathname.split('/')[2];
+
+
+/* =====================
+   Load Questions
+===================== */
+
+fetch(`/exam/${examId}/questions`)
+
+.then(res=>res.json())
+
+.then(questions=>{
+
+const container=
+document.getElementById(
+'questions'
+);
+
+container.innerHTML='';
+
+questions.forEach((question,index)=>{
+
+let html=`
+
+<div class="question-card">
+
+<h3>
+Question ${index+1}
+</h3>
+
+<p>
+${question.question_text}
+</p>
+
+`;
+
+const type=
+question.question_type
+.trim()
+.toUpperCase();
+
+
+/* Show options only for MCQ */
+
+if(type==="MCQ"){
+
+html+=`
+
+<label>
+<input
+type="radio"
+name="q${question.question_id}"
+value="${question.option1}">
+${question.option1}
+</label>
+
+<label>
+<input
+type="radio"
+name="q${question.question_id}"
+value="${question.option2}">
+${question.option2}
+</label>
+
+<label>
+<input
+type="radio"
+name="q${question.question_id}"
+value="${question.option3}">
+${question.option3}
+</label>
+
+<label>
+<input
+type="radio"
+name="q${question.question_id}"
+value="${question.option4}">
+${question.option4}
+</label>
+
+`;
+
+}
+
+/* Descriptive → textarea only */
+
+if(type==="DESCRIPTIVE"){
+
+html+=`
+
+<textarea
+name="q${question.question_id}"
+placeholder="Write your answer here..."
+rows="5">
+</textarea>
+
+`;
+
+}
+
+html+=`</div>`;
+
+container.innerHTML+=html;
+
+});
+
+});
+
+/* =====================
+   Submit Exam
+===================== */
+
+function submitExam(){
+
+const answers={};
+
+
+/* MCQ */
+
+document
+.querySelectorAll(
+'input[type=radio]:checked'
+)
+
+.forEach(input=>{
+
+answers[
+input.name.replace(
+'q',
+''
+)
+]
+
+=
+
+input.value;
+
+});
+
+
+/* Descriptive */
+
+document
+.querySelectorAll(
+'textarea'
+)
+
+.forEach(textarea=>{
+
+const answer=
+
+textarea.value.trim();
+
+if(answer!==""){
+
+answers[
+textarea.name.replace(
+'q',
+''
+)
+]
+
+=
+
+answer;
+
+}
+
+});
+
+
+fetch(
+
+`/exam/${examId}/submit`,
+
+{
+
+method:'POST',
+
+headers:{
+
+'Content-Type':
+'application/json'
+
+},
+
+body:JSON.stringify({
+
+answers
+
+})
+
+}
+
+)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+if(data.error){
+
+alert(data.error);
+
+return;
+
+}
+
+alert(
+
+`Exam Submitted!
+
+Your Score:
+${data.score}`
+
+);
+
+window.location.href=
+'/dashboard';
+
+})
+
+.catch(error=>{
+
+console.log(error);
+
+alert(
+"Error submitting exam"
+);
+
+});
+
+}
+
+
+/* =====================
+   Timer
+===================== */
+
+fetch(
+`/exam/${examId}/duration`
+)
+
+.then(
+res=>res.json()
+)
+
+.then(data=>{
+
+let totalSeconds=
+data.duration*60;
+
+const timer=
+document.getElementById(
+'timer'
+);
+
+updateTimer();
+
+const countdown=
+
+setInterval(()=>{
+
+totalSeconds--;
+
+updateTimer();
+
+if(totalSeconds<=0){
+
+clearInterval(
+countdown
+);
+
+timer.innerHTML=
+
+"⏰ Time Left: 00:00";
+
+alert(
+"Time Over! Exam submitted automatically."
+);
+
+submitExam();
+
+}
+
+},1000);
+
+
+function updateTimer(){
+
+const minutes=
+
+Math.floor(
+totalSeconds/60
+);
+
+const seconds=
+
+totalSeconds%60;
+
+timer.innerHTML=
+
+`⏰ Time Left:
+${String(minutes).padStart(2,'0')}
+:
+${String(seconds).padStart(2,'0')}`;
+
+}
+
+});
+
+
+/* ===============================
+   Exam Security
+================================= */
+
+let warningCount=0;
+
+
+/* Fullscreen */
+
+document.documentElement
+.requestFullscreen()
+.catch(()=>{});
+
+
+/* Fullscreen Exit */
+
+document.addEventListener(
+'fullscreenchange',
+()=>{
+
+if(!document.fullscreenElement){
+
+alert(
+"Please stay in fullscreen mode!"
+);
+
+document.documentElement
+.requestFullscreen();
+
+}
+
+});
+
+
+/* Tab Switch */
+
+document.addEventListener(
+'visibilitychange',
+()=>{
+
+if(document.hidden){
+
+warningCount++;
+
+alert(
+
+`Warning ${warningCount}
+
+Tab switching detected`
+
+);
+
+if(warningCount>=3){
+
+alert(
+
+"Exam auto-submitted due to multiple violations."
+
+);
+
+submitExam();
+
+}
+
+}
+
+});
+
+
+/* Prevent Refresh */
+
+window.addEventListener(
+'beforeunload',
+(e)=>{
+
+e.preventDefault();
+
+e.returnValue='';
+
+});
+
+
+/* Prevent Back Button */
+
+history.pushState(
+null,
+null,
+location.href
+);
+
+window.onpopstate=()=>{
+
+history.pushState(
+null,
+null,
+location.href
+);
+
+alert(
+"You cannot leave exam while it is in progress!"
+);
+
+};
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+/* Global */
+
+body{
+font-family:Arial,sans-serif;
+margin:0;
+min-height:100vh;
+background:#d9f3ff;
+}
+
+a{
+text-decoration:none;
+}
+
+button{
+padding:12px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+background:#0099cc;
+color:white;
+}
+
+button:hover{
+background:#0077aa;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:8px;
+box-sizing:border-box;
+}
+
+
+/* Layout */
+
+.login-body,
+.study-container,
+.dashboard-body,
+.exam-body{
+
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+
+background:#d9f3ff;
+}
+
+
+/* Containers */
+
+.container,
+.main-container,
+.study-card,
+.exam-container,
+.dashboard-container{
+
+background:white;
+border-radius:15px;
+box-shadow:0 4px 15px rgba(0,0,0,.2);
+
+}
+
+.container{
+width:400px;
+padding:35px;
+}
+
+.main-container{
+width:90%;
+max-width:700px;
+padding:40px;
+text-align:center;
+}
+
+.exam-container{
+width:95%;
+min-height:90vh;
+margin:20px auto;
+padding:40px;
+}
+
+.study-card{
+max-width:600px;
+padding:40px;
+text-align:center;
+}
+
+.dashboard-container{
+width:450px;
+padding:40px;
+text-align:center;
+}
+
+.container h2{
+text-align:center;
+margin-bottom:25px;
+color:#2c3e50;
+}
+
+.container form{
+display:flex;
+flex-direction:column;
+}
+
+
+/* Dashboard */
+
+.dashboard-container h1{
+margin-bottom:30px;
+color:#2c3e50;
+}
+
+.dashboard-menu{
+list-style:none;
+padding:0;
+}
+
+.dashboard-menu li{
+margin-bottom:12px;
+}
+
+.dashboard-menu a,
+.dashboard-link,
+.logout{
+
+display:block;
+padding:12px;
+border-radius:8px;
+text-align:center;
+color:white;
+
+}
+
+.dashboard-menu a,
+.dashboard-link{
+background:#0099cc;
+}
+
+.dashboard-menu a:hover{
+background:#0077aa;
+}
+
+.dashboard-link{
+margin-top:20px;
+}
+
+
+/* Logout */
+
+.logout{
+width:100%;
+margin-top:20px;
+background:red !important;
+font-weight:bold;
+}
+
+.logout:hover{
+background:darkred !important;
+}
+
+
+/* Login */
+
+#selectionPage{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-top:30px;
+}
+
+.role-card{
+width:220px;
+padding:25px;
+background:#f7f7f7;
+border-radius:15px;
+cursor:pointer;
+font-size:30px;
+transition:.3s;
+}
+
+.role-card:hover{
+transform:translateY(-8px);
+background:#0099cc;
+color:white;
+}
+
+.login-form button{
+width:100%;
+margin-top:15px;
+}
+
+
+/* Exam */
+
+.exam-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.timer{
+padding:10px 20px;
+border-radius:10px;
+background:#0099cc;
+color:white;
+font-weight:bold;
+}
+
+.question-card{
+background:white;
+padding:25px;
+margin-bottom:20px;
+border-radius:12px;
+border:1px solid #ddd;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.question-card h3{
+margin-top:0;
+color:#0099cc;
+}
+
+.question-card p{
+font-size:18px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.question-card label{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px;
+margin:10px 0;
+border:1px solid #ddd;
+border-radius:10px;
+cursor:pointer;
+transition:.3s;
+}
+
+.question-card label:hover{
+background:#f4f9ff;
+border-color:#0099cc;
+}
+
+.question-card input[type="radio"]{
+width:18px;
+height:18px;
+margin:0;
+flex-shrink:0;
+accent-color:#0099cc;
+cursor:pointer;
+}
+
+.question-card textarea{
+min-height:120px;
+resize:none;
+}
+
+.submit-btn{
+width:100%;
+padding:15px;
+font-size:18px;
+background:#28a745;
+}
+
+.submit-btn:hover{
+background:#218838;
+}
+
+
+/* Results */
+
+.results-table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+.results-table th,
+.results-table td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+.results-table th{
+background:#0099cc;
+color:white;
+}
+
+
+/* Study Plan */
+
+.score-circle{
+width:150px;
+height:150px;
+margin:25px auto;
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+background:#0099cc;
+color:white;
+}
+
+
+/* Buttons */
+
+.back-btn{
+display:block;
+padding:12px 25px;
+margin-top:20px;
+text-align:center;
+border-radius:10px;
+background:#555;
+color:white;
+}
+
+.delete-btn{
+background:red;
+}
+
+.delete-btn:hover{
+background:darkred;
+}

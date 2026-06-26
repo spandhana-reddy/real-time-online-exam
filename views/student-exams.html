@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Available Exams</title>
+
+<link rel="stylesheet"
+href="/css/style.css">
+
+</head>
+
+<body class="dashboard-body">
+
+<div class="dashboard-container">
+
+<h1>
+📝 Available Exams
+</h1>
+
+<div id="examList">
+
+Loading Exams...
+
+</div>
+
+<br>
+
+<a href="/dashboard"
+class="back-btn">
+
+⬅ Back to Dashboard
+
+</a>
+
+</div>
+
+
+<script>
+
+fetch(
+'/student/exams/data'
+)
+
+.then(
+res=>res.json()
+)
+
+.then(exams=>{
+
+const list=
+
+document.getElementById(
+'examList'
+);
+
+list.innerHTML='';
+
+
+if(exams.length===0){
+
+list.innerHTML=
+'<p>No exams available</p>';
+
+return;
+
+}
+
+
+exams.forEach(exam=>{
+
+list.innerHTML+=`
+
+<div class="question-card">
+
+<h3>
+
+${exam.exam_name}
+
+</h3>
+
+<p>
+
+📚 Subject:
+${exam.subject || 'N/A'}
+
+</p>
+
+<p>
+
+⏱ Duration:
+${exam.duration}
+Minutes
+
+</p>
+
+<p>
+
+🎯 Total Marks:
+${exam.total_marks || 0}
+
+</p>
+
+<a href="/exam/${exam.exam_id}">
+
+<button>
+
+Start Exam
+
+</button>
+
+</a>
+
+</div>
+
+`;
+
+});
+
+})
+
+.catch(error=>{
+
+console.log(error);
+
+document.getElementById(
+'examList'
+)
+
+.innerHTML=
+
+'<p>Error Loading Exams</p>';
+
+});
+
+</script>
+
+</body>
+</html>

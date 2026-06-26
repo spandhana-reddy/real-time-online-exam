@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Delete Exam</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+<div class="container">
+
+<h2>🗑 Delete Exam</h2>
+
+<div id="examList">
+Loading...
+</div>
+
+<a href="/admin/dashboard"
+class="back-btn">
+
+⬅ Back to Dashboard
+
+</a>
+
+</div>
+
+<script>
+
+fetch('/admin/delete-exam/data')
+
+.then(res=>res.json())
+
+.then(exams=>{
+
+const container=
+document.getElementById(
+'examList'
+);
+
+container.innerHTML='';
+
+exams.forEach(exam=>{
+
+container.innerHTML+=`
+
+<div class="question-card">
+
+<p>${exam.exam_name}</p>
+
+<button
+class="delete-btn"
+onclick="deleteExam(${exam.exam_id})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+});
+
+
+function deleteExam(id){
+
+if(confirm(
+'Delete this exam?'
+)){
+
+fetch(
+`/admin/delete-exam/${id}`,
+{
+method:'POST'
+}
+)
+
+.then(()=>{
+
+location.reload();
+
+});
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

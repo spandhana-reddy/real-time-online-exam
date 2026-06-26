@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Question</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+<div class="container">
+
+<h2>➕ Add Questions</h2>
+
+<form action="/admin/add-question" method="POST">
+
+<label>Select Exam</label>
+
+<select name="exam_id" id="examSelect" required>
+
+<option value="">
+Choose Exam Name
+</option>
+
+</select>
+
+
+<textarea
+name="question_text"
+placeholder="Question"
+required>
+</textarea>
+
+
+<select
+name="question_type"
+id="questionType">
+
+<option value="MCQ">
+MCQ
+</option>
+
+<option value="DESCRIPTIVE">
+DESCRIPTIVE
+</option>
+
+</select>
+
+
+<!-- MCQ Options -->
+
+<div id="mcqOptions">
+
+<input
+type="text"
+name="option1"
+placeholder="Option 1">
+
+<input
+type="text"
+name="option2"
+placeholder="Option 2">
+
+<input
+type="text"
+name="option3"
+placeholder="Option 3">
+
+<input
+type="text"
+name="option4"
+placeholder="Option 4">
+
+</div>
+
+
+<input
+type="text"
+name="correct_answer"
+placeholder="Correct Answer"
+required>
+
+
+<button type="submit">
+
+Add Question
+
+</button>
+
+</form>
+
+<a href="/admin/dashboard"
+class="back-btn">
+
+⬅ Back to Dashboard
+
+</a>
+
+</div>
+
+
+<script>
+
+/* Load Exams */
+
+fetch('/student/exams/data')
+
+.then(res=>res.json())
+
+.then(exams=>{
+
+const select=
+document.getElementById(
+'examSelect'
+);
+
+exams.forEach(exam=>{
+
+select.innerHTML+=`
+
+<option value="${exam.exam_id}">
+${exam.exam_name}
+</option>
+
+`;
+
+});
+
+});
+
+
+/* Show/Hide MCQ Options */
+
+const questionType=
+document.getElementById(
+'questionType'
+);
+
+const mcqOptions=
+document.getElementById(
+'mcqOptions'
+);
+
+questionType.addEventListener(
+'change',
+()=>{
+
+if(
+questionType.value==="DESCRIPTIVE"
+){
+
+mcqOptions.style.display=
+'none';
+
+}
+else{
+
+mcqOptions.style.display=
+'block';
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

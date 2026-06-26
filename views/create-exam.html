@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Exam</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+<div class="container">
+
+    <h2>📝 Create Exam</h2>
+
+    <form action="/admin/create-exam" method="POST">
+
+        <input
+        type="text"
+        name="exam_name"
+        placeholder="Exam Name"
+        required>
+
+        <input
+        type="text"
+        name="subject"
+        placeholder="Subject"
+        required>
+
+        <input
+        type="number"
+        name="duration"
+        placeholder="Duration (minutes)"
+        required>
+
+        <input
+        type="number"
+        name="total_marks"
+        placeholder="Total Marks"
+        required>
+
+        <button type="submit">
+
+            Create Exam
+
+        </button>
+
+    </form>
+
+
+    <a href="/admin/dashboard"
+       class="back-btn">
+
+       ⬅ Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+</html>
