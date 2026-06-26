@@ -1,51 +1,43 @@
-const express=require('express');
-const bodyParser=require('body-parser');
-const session=require('express-session');
-const path=require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const path = require('path');
 
-const app=express();
+const app = express();
 
-app.use(bodyParser.urlencoded({extended:true}));
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Session
 app.use(session({
-secret:'onlineexamsecret',
-resave:false,
-saveUninitialized:true
+    secret: 'onlineexamsecret',
+    resave: false,
+    saveUninitialized: true
 }));
 
-app.use(
-express.static(
-path.join(__dirname,'public')
-)
-);
-
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
+app.use(require('./routes/student'));
+app.use(require('./routes/admin'));
+app.use(require('./routes/exam'));
+app.use(require('./routes/result'));
 
-app.use(
-require('./routes/student')
-);
+// Default route
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
 
-app.use(
-require('./routes/admin')
-);
+// 404 Page
+app.use((req, res) => {
+    res.status(404).send('404 - Page Not Found');
+});
 
-app.use(
-require('./routes/exam')
-);
+// Start Server
+const PORT = process.env.PORT || 3000;
 
-app.use(
-require('./routes/result')
-);
-
-
-const PORT=3000;
-
-app.listen(PORT,()=>{
-
-console.log(
-`Server running at http://localhost:${PORT}`
-);
-
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
