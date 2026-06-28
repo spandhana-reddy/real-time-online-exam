@@ -34,7 +34,7 @@ password
 
 db.query(
 
-'SELECT * FROM admin WHERE username=?',
+'SELECT * FROM admin WHERE username=$1',
 
 [username],
 
@@ -127,7 +127,7 @@ db.query(
 
 `INSERT INTO exams
 (exam_name,subject,duration,total_marks)
-VALUES(?,?,?,?)`,
+VALUES($1,$2,$3,$4)`,
 
 [
 exam_name,
@@ -199,7 +199,7 @@ option1,option2,
 option3,option4,
 correct_answer)
 
-VALUES(?,?,?,?,?,?,?,?)`,
+VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
 
 [
 exam_id,
@@ -282,7 +282,7 @@ router.post(
 
 db.query(
 
-'DELETE FROM exams WHERE exam_id=?',
+'DELETE FROM exams WHERE exam_id=$1',
 
 [req.params.id],
 

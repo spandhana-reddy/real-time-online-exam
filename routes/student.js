@@ -59,7 +59,7 @@ password,
 
 db.query(
 
-'INSERT INTO students(name,email,password) VALUES(?,?,?)',
+'INSERT INTO students(name,email,password) VALUES($1,$2,$3)',
 
 [name,email,hash],
 
@@ -85,7 +85,7 @@ password
 
 db.query(
 
-'SELECT * FROM students WHERE email=?',
+'SELECT * FROM students WHERE email=$1',
 
 [email],
 

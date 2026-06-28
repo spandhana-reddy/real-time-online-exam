@@ -82,7 +82,7 @@ router.get(
 
 db.query(
 
-'SELECT * FROM questions WHERE exam_id=?',
+'SELECT * FROM questions WHERE exam_id=$1',
 
 [req.params.examId],
 
@@ -139,7 +139,7 @@ error:'Student not logged in'
 
 db.query(
 
-'SELECT * FROM questions WHERE exam_id=?',
+'SELECT * FROM questions WHERE exam_id=$1',
 
 [examId],
 
@@ -202,7 +202,7 @@ score+=5;
 
 db.query(
 
-'INSERT INTO results(student_id,exam_id,score) VALUES(?,?,?)',
+'INSERT INTO results(student_id,exam_id,score) VALUES($1,$2,$3)',
 
 [
 studentId,
@@ -248,7 +248,7 @@ router.get(
 
 db.query(
 
-'SELECT duration FROM exams WHERE exam_id=?',
+'SELECT duration FROM exams WHERE exam_id=$1',
 
 [req.params.examId],
 

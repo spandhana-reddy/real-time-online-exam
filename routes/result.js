@@ -74,7 +74,7 @@ router.get(
 
 db.query(
 
-'SELECT AVG(score) AS average FROM results WHERE student_id=?',
+'SELECT AVG(score) AS average FROM results WHERE student_id=$1',
 
 [req.session.studentId],
 
