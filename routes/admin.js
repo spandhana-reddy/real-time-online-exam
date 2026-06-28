@@ -5,85 +5,65 @@ const bcrypt=require('bcrypt');
 const db=require('../db');
 
 const view=file=>
-path.join(
-__dirname,
-'../views',
-file
-);
+path.join(__dirname,'../views',file);
 
 
 /* Admin Login Page */
 
 router.get('/admin',(req,res)=>{
 
-res.sendFile(
-view('admin-login.html')
-);
+res.sendFile(view('admin-login.html'));
 
 });
 
 
 /* Admin Login */
 
-router.post('/admin/login',(req,res)=>{
+router.post('/admin/login',async(req,res)=>{
 
-const{
-username,
-password
-}=req.body;
+try{
 
-db.query(
+const {username,password}=req.body;
+
+const result=await db.query(
 
 'SELECT * FROM admin WHERE username=$1',
+[username]
 
-[username],
-
-async(err,result)=>{
-
-if(err){
-
-console.log(err);
-
-return res.send(
-'Database Error'
 );
+
+if(result.rows.length===0){
+
+return res.send('Admin Not Found');
 
 }
 
-if(result.length===0){
+const admin=result.rows[0];
 
-return res.send(
-'Admin Not Found'
-);
-
-}
-
-const admin=
-result[0];
-
-const match=
-
-await bcrypt.compare(
+const match=await bcrypt.compare(
 password,
 admin.password
 );
 
 if(!match){
 
-return res.send(
-'Invalid Password'
-);
+return res.send('Invalid Password');
 
 }
 
 req.session.adminId=
 admin.admin_id;
 
-res.redirect(
-'/admin/dashboard'
-);
+res.redirect('/admin/dashboard');
 
-});
+}
+
+catch(err){
+
+console.log(err);
+res.send('Database Error');
+
+}
 
 });
 
@@ -112,9 +92,9 @@ view('create-exam.html')
 
 /* Save Exam */
 
-router.post(
-'/admin/create-exam',
-(req,res)=>{
+router.post('/admin/create-exam',async(req,res)=>{
+
+try{
 
 const{
 exam_name,
@@ -123,7 +103,7 @@ duration,
 total_marks
 }=req.body;
 
-db.query(
+await db.query(
 
 `INSERT INTO exams
 (exam_name,subject,duration,total_marks)
@@ -134,51 +114,42 @@ exam_name,
 subject,
 duration,
 total_marks
-],
+]
 
-(err)=>{
-
-if(err){
-
-console.log(err);
-
-return res.send(
-'Error creating exam'
 );
+
+res.redirect('/admin/add-question');
 
 }
 
-res.redirect(
-'/admin/add-question'
-);
+catch(err){
 
-});
+console.log(err);
+res.send('Error creating exam');
+
+}
 
 });
 
 
 /* Add Question Page */
 
-router.get(
-'/admin/add-question',
-(req,res)=>{
+router.get('/admin/add-question',(req,res)=>{
 
 res.sendFile(
-view(
-'add-question.html'
-));
+view('add-question.html')
+);
 
 });
 
 
 /* Save Question */
 
-router.post(
-'/admin/add-question',
-(req,res)=>{
+router.post('/admin/add-question',async(req,res)=>{
+
+try{
 
 const{
-
 exam_id,
 question_text,
 question_type,
@@ -187,17 +158,14 @@ option2,
 option3,
 option4,
 correct_answer
-
 }=req.body;
 
-db.query(
+await db.query(
 
 `INSERT INTO questions
-(exam_id,question_text,
-question_type,
-option1,option2,
-option3,option4,
-correct_answer)
+(exam_id,question_text,question_type,
+option1,option2,option3,
+option4,correct_answer)
 
 VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
 
@@ -210,127 +178,83 @@ option2,
 option3,
 option4,
 correct_answer
-],
+]
 
-(err)=>{
-
-if(err){
-
-console.log(err);
-
-return res.send(
-'Error Adding Question'
 );
+
+res.redirect('/admin/dashboard');
 
 }
 
-res.redirect(
-'/admin/dashboard'
-);
-
-});
-
-});
-
-
-/* Delete Exam Page */
-
-router.get(
-'/admin/delete-exam',
-(req,res)=>{
-
-res.sendFile(
-view(
-'delete-exam.html'
-));
-
-});
-
-
-/* Exam List */
-
-router.get(
-'/admin/delete-exam/data',
-(req,res)=>{
-
-db.query(
-
-'SELECT exam_id,exam_name FROM exams',
-
-(err,result)=>{
-
-if(err){
+catch(err){
 
 console.log(err);
-
-return res.json([]);
+res.send('Error Adding Question');
 
 }
 
-res.json(result);
-
 });
+
+
+/* Delete Exam Data */
+
+router.get('/admin/delete-exam/data',async(req,res)=>{
+
+try{
+
+const result=await db.query(
+'SELECT exam_id,exam_name FROM exams'
+);
+
+res.json(result.rows);
+
+}
+
+catch(err){
+
+console.log(err);
+res.json([]);
+
+}
 
 });
 
 
 /* Delete Exam */
 
-router.post(
-'/admin/delete-exam/:id',
-(req,res)=>{
+router.post('/admin/delete-exam/:id',async(req,res)=>{
 
-db.query(
+try{
 
+await db.query(
 'DELETE FROM exams WHERE exam_id=$1',
+[req.params.id]
+);
 
-[req.params.id],
-
-(err)=>{
-
-if(err){
-
-console.log(err);
-
-return res.json({
-success:false
-});
+res.json({success:true});
 
 }
 
-res.json({
-success:true
-});
+catch(err){
 
-});
+console.log(err);
 
-});
+res.json({success:false});
 
-
-/* Student Results Page */
-
-router.get(
-'/admin/results',
-(req,res)=>{
-
-res.sendFile(
-view(
-'admin-results.html'
-));
+}
 
 });
 
 
-/* Student Results Data */
+/* Student Results */
 
-router.get(
-'/admin/results/data',
-(req,res)=>{
+router.get('/admin/results/data',async(req,res)=>{
 
-db.query(
+try{
 
-`SELECT
-students.name,
+const result=await db.query(
+
+`SELECT students.name,
 exams.exam_name,
 results.score,
 results.submitted_at
@@ -338,35 +262,28 @@ results.submitted_at
 FROM results
 
 JOIN students
-ON students.student_id=
-results.student_id
+ON students.student_id=results.student_id
 
 JOIN exams
-ON exams.exam_id=
-results.exam_id`,
+ON exams.exam_id=results.exam_id`
 
-(err,result)=>{
+);
 
-if(err){
-
-console.log(err);
-
-return res.json([]);
+res.json(result.rows);
 
 }
 
-res.json(result);
+catch(err){
+
+console.log(err);
+res.json([]);
+
+}
 
 });
 
-});
 
-
-/* Admin Logout */
-
-router.get(
-'/admin/logout',
-(req,res)=>{
+router.get('/admin/logout',(req,res)=>{
 
 req.session.destroy(()=>{
 

@@ -5,24 +5,24 @@ const db=require('../db');
 const bcrypt=require('bcrypt');
 
 const view=file=>
-path.join(
-__dirname,
-'../views',
-file
-);
+path.join(__dirname,'../views',file);
 
 const checkStudent=(req,res,next)=>{
 
-if(!req.session.studentId)
+if(!req.session.studentId){
+
 return res.redirect('/');
+
+}
 
 next();
 
 };
 
 
-router.get('/',
-(req,res)=>{
+/* Home */
+
+router.get('/',(req,res)=>{
 
 res.sendFile(
 view('login.html')
@@ -30,9 +30,10 @@ view('login.html')
 
 });
 
-router.get(
-'/register',
-(req,res)=>{
+
+/* Register Page */
+
+router.get('/register',(req,res)=>{
 
 res.sendFile(
 view('register.html')
@@ -41,86 +42,103 @@ view('register.html')
 });
 
 
-router.post(
-'/register',
-async(req,res)=>{
+/* Register */
 
-const {
-name,
-email,
-password
-}=req.body;
+router.post('/register',async(req,res)=>{
 
-const hash=
-await bcrypt.hash(
+try{
+
+const {name,email,password}=req.body;
+
+const hash=await bcrypt.hash(
 password,
 10
 );
 
-db.query(
+await db.query(
 
 'INSERT INTO students(name,email,password) VALUES($1,$2,$3)',
 
-[name,email,hash],
+[name,email,hash]
 
-()=>{
+);
 
 res.sendFile(
 view('registration-success.html')
 );
 
-});
+}
+
+catch(err){
+
+console.log(err);
+res.send("Registration Failed");
+
+}
 
 });
 
 
-router.post(
-'/login',
-(req,res)=>{
+/* Login */
 
-const{
-email,
-password
-}=req.body;
+router.post('/login',async(req,res)=>{
 
-db.query(
+try{
+
+const {email,password}=req.body;
+
+const result=await db.query(
 
 'SELECT * FROM students WHERE email=$1',
 
-[email],
+[email]
 
-async(err,result)=>{
+);
 
-if(result.length===0)
+if(result.rows.length===0){
+
 return res.send(
 'User not found'
 );
 
-const student=
-result[0];
+}
 
-const match=
-await bcrypt.compare(
+const student=result.rows[0];
+
+const match=await bcrypt.compare(
 password,
 student.password
 );
 
-if(!match)
+if(!match){
+
 return res.send(
 'Invalid Password'
 );
 
+}
+
 req.session.studentId=
 student.student_id;
 
-res.redirect(
-'/dashboard'
+res.redirect('/dashboard');
+
+}
+
+catch(err){
+
+console.log(err);
+
+res.send(
+'Database Error'
 );
 
-});
+}
 
 });
 
+
+/* Dashboard */
 
 router.get(
 '/dashboard',
@@ -128,19 +146,21 @@ checkStudent,
 (req,res)=>{
 
 res.sendFile(
-view(
-'dashboard.html'
-));
+view('dashboard.html')
+);
 
 });
 
-router.get(
-'/logout',
-(req,res)=>{
 
-req.session.destroy(
-()=>res.redirect('/')
-);
+/* Logout */
+
+router.get('/logout',(req,res)=>{
+
+req.session.destroy(()=>{
+
+res.redirect('/');
+
+});
 
 });
 
