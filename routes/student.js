@@ -5,7 +5,11 @@ const db=require('../db');
 const bcrypt=require('bcrypt');
 
 const view=file=>
-path.join(__dirname,'../views',file);
+path.join(
+__dirname,
+'../views',
+file
+);
 
 const checkStudent=(req,res,next)=>{
 
@@ -31,7 +35,7 @@ view('login.html')
 });
 
 
-/* Register Page */
+/* Register */
 
 router.get('/register',(req,res)=>{
 
@@ -42,15 +46,18 @@ view('register.html')
 });
 
 
-/* Register */
-
 router.post('/register',async(req,res)=>{
 
 try{
 
-const {name,email,password}=req.body;
+const{
+name,
+email,
+password
+}=req.body;
 
-const hash=await bcrypt.hash(
+const hash=
+await bcrypt.hash(
 password,
 10
 );
@@ -59,20 +66,28 @@ await db.query(
 
 'INSERT INTO students(name,email,password) VALUES($1,$2,$3)',
 
-[name,email,hash]
+[
+name,
+email,
+hash
+]
 
 );
 
 res.sendFile(
-view('registration-success.html')
-);
+view(
+'registration-success.html'
+));
 
 }
 
 catch(err){
 
 console.log(err);
-res.send("Registration Failed");
+
+res.send(
+'Registration Failed'
+);
 
 }
 
@@ -85,9 +100,13 @@ router.post('/login',async(req,res)=>{
 
 try{
 
-const {email,password}=req.body;
+const{
+email,
+password
+}=req.body;
 
-const result=await db.query(
+const result=
+await db.query(
 
 'SELECT * FROM students WHERE email=$1',
 
@@ -103,9 +122,11 @@ return res.send(
 
 }
 
-const student=result.rows[0];
+const student=
+result.rows[0];
 
-const match=await bcrypt.compare(
+const match=
+await bcrypt.compare(
 password,
 student.password
 );
@@ -121,7 +142,9 @@ return res.send(
 req.session.studentId=
 student.student_id;
 
-res.redirect('/dashboard');
+res.redirect(
+'/dashboard'
+);
 
 }
 
